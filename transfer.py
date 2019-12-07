@@ -24,6 +24,21 @@ from tensorflow.python.keras import backend as K
 import IPython.display
 
 
+# Content layer where will pull our feature maps
+content_layers = ['block5_conv2']
+
+# Style layer we are interested in
+style_layers = ['block1_conv1',
+                'block2_conv1',
+                'block3_conv1',
+                'block4_conv1',
+                'block5_conv1'
+                ]
+
+num_content_layers = len(content_layers)
+num_style_layers = len(style_layers)
+
+
 def load_img(path_to_img):
     '''
     Function reads in path, and loads the image, converting down to a maximum dimension if necessary
@@ -35,7 +50,7 @@ def load_img(path_to_img):
     img = img.resize((round(img.size[0]*scale), round(img.size[1]*scale)), Image.ANTIALIAS)
 
     img = kp_image.img_to_array(img)
-    
+
     # We need to broadcast the image array such that it has a batch dimension
     img = np.expand_dims(img, axis=0)
     return img
