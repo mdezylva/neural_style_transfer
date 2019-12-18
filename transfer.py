@@ -185,6 +185,16 @@ def get_feature_representations(model, content_path, style_path):
     content_features = [content_layer[0] for content_layer in content_outputs[num_style_layers:]]
     return style_features, content_features
 
+def get_denoise_loss(model):
+    """ 
+    This creates a proxy for the noise in the image by shifting the image to the left and the right by 1 pixel in both x and y axis.
+
+    Calculate the difference between the shifted image and the original image
+    Absolute Value forces this to be positive
+    Calculate the sum of pixels in those images
+    """
+    denoise_loss = tf.reduce_sum(tf.abs(model.input[:, 1:, :, :] - model.input[:, :-1, :, :])) + tf.reduce_sum(tf.abs(model.input[:, :, 1:, :] - model.input[:, :, :-1, :]))
+
 def compute_loss(model, loss_weights, init_image, gram_style_features, content_features):
     """This function will compute the loss total loss.
 
